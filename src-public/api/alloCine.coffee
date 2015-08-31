@@ -16,3 +16,11 @@ app.factory 'AlloCine', ($resource, ALLOCINE_API_URL, ALLOCINE_PARTNER_TOKEN) ->
         cinema.allocineLink = place.link[0].href
         cinema.geoloc = place.geoloc
         cinema.area = place.area
+
+  getMovies: (cinemaId) ->
+    cinemaData = Cinema.get {
+      partner: ALLOCINE_PARTNER_TOKEN,
+      alloCineId: cinemaId
+    }
+    cinemaData.$promise.then (data) ->
+      return data.feed.theaterShowtimes[0].movieShowtimes

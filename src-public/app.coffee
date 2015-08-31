@@ -32,6 +32,13 @@ app.config (
     url: '/cinema'
     controller: 'cinemaCtrl'
     templateUrl: 'cinema.html'
+  .state 'showtime',
+    url: '/cinema/:cinemaId/showtime'
+    controller: 'showtimeCtrl'
+    templateUrl: 'showtime.html'
+    resolve:
+      movies: (AlloCine, $stateParams) ->
+        return AlloCine.getMovies $stateParams.cinemaId
 
   $urlRouterProvider.otherwise '/cinema'
 

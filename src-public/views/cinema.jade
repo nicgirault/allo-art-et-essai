@@ -17,4 +17,5 @@ table.table-bordered.table-striped
       a(target="_blank" href="{{ cinema.allocineLink }}") AlloCine page
     td {{ cinema.geoloc }}
     td
-      button.btn.btn-primary(disabled=true) A l'affiche
+      a(ui-sref="showtime({ cinemaId: cinema.alloCineId })")
+        button.btn.btn-primary A l'affiche

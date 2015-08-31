@@ -1,0 +1,34 @@
+h1 Programmation
+
+p {{ cinema.alloCineId }}
+table.table-bordered.table-striped
+  tr
+    th Titre
+    th Réalisateur
+    th Acteurs
+    th Date de sortie
+    th Genre
+    th Poster
+    th Trailer
+    th Lien AlloCine
+    th Statistiques
+    th Version
+    th Séance
+  tr(ng-repeat="movie in movies")
+    td {{ movie.onShow.movie.title }}
+    td {{ movie.onShow.movie.castingShort.directors }}
+    td {{ movie.onShow.movie.castingShort.actors }}
+    td {{ movie.onShow.movie.release.releaseDate }}
+    td {{ movie.onShow.movie.genre[0].$ }}
+    td
+      img(src="{{ movie.onShow.movie.poster.href }}" style="width: 100px;")
+    td
+      a(href="{{ movie.onShow.movie.trailer.href }}" target="_blank") Trailer
+    td
+      a(href="{{ movie.onShow.movie.link.href }}" target="_blank") Lien AlloCine
+    td
+      ul
+        li Presse: {{ movie.onShow.movie.statistics.pressRating }} ({{ movie.onShow.movie.statistics.pressReviewCount }})
+        li Utilisateurs: {{ movie.onShow.movie.statistics.userRating }} ({{ movie.onShow.movie.statistics.userReviewCount }}, {{ movie.onShow.movie.statistics.userRatingCount }})
+    td {{ movie.version.$ }} {{ versionLabel[movie.version.original] }}
+    td {{ movie.display }}
