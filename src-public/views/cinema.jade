@@ -1,0 +1,23 @@
+h1 Admin Cinémas d'art et Essai \o/
+
+form(role="form", ng-submit="addCinema()")
+  .input-group
+    input.form-control(type="text", ng-model="newCinema.alloCineId", autofocus)
+    span.input-group-btn
+      button.btn.btn-default(type="submit") Add
+
+div(ng-repeat="cinema in cinemas")
+  form(ng-hide="cinema.editing")
+    .input-group
+      span.input-group-addon {{ cinema.random }}
+      input.form-control(ng-model="cinema._cache.alloCineId", ng-dblclick="editingCinema(cinema)", readonly)
+      span.input-group-btn
+        button.btn.btn-default(ng-click="editingCinema(cinema)") Edit
+        button.btn.btn-default(ng-click="removeCinema(cinema)") Remove
+  form(ng-submit="editCinema(cinema)", ng-show="cinema.editing")
+    .input-group
+      span.input-group-addon {{ cinema.random }}
+      input.form-control(ng-model="cinema.alloCineId")
+      span.input-group-btn
+        .btn.btn-default(ng-click="cancelEditing(cinema)") Cancel
+        .btn.btn-default(ng-click="removeCinema(cinema)") Remove

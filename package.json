@@ -1,10 +1,10 @@
 {
-  "name": "angular-github-pages",
-  "description": "Angular Github Pages",
-  "homepage": "https://github.com/jbeurel/angular-github-pages",
+  "name": "allo-art-et-essai",
+  "description": "Allo Art et Essai",
+  "homepage": "https://github.com/nicgirault/allo-art-et-essai",
   "repository": {
     "type": "git",
-    "url": "git@github.com:jbeurel/angular-github-pages.git"
+    "url": "git@github.com:nicgirault/allo-art-et-essai.git"
   },
   "engines": {
     "node": "0.10.x"

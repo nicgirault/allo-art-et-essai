@@ -1,0 +1,11 @@
+{
+  "prerenderio": {
+    "token": "6fsx3RMcXRBJlSPDNe8C"
+  },
+  "parse": {
+      "applicationId": "2Y3JhneedL6TfTswvBgPfJbZ0qxQRJHj8jg0GqEU",
+      "masterKey": "NmNYUxRkPJkru7IdG56ZQyTm2zdRHdNbRJki423O",
+      "restApiKey": "w1ek8EuSk7dD8bEBDSN5J8XTyXlGuOgx8mv7q7MD"
+  },
+  "google-analytics": "UA-XXX"
+}

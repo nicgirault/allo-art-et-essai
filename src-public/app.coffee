@@ -1,6 +1,6 @@
 'use strict'
 
-app = angular.module 'angularParseBoilerplate', [
+app = angular.module 'alloArtEtEssai', [
   'ng'
   'ngResource'
   'ui.router'
@@ -21,16 +21,16 @@ app.config (
   $locationProvider.hashPrefix '!'
 
   $stateProvider
-  .state 'task',
+  .state 'cinema',
     url: '/:locale'
-    controller: 'TaskCtrl'
-    templateUrl: 'task.html'
+    controller: 'cinemaCtrl'
+    templateUrl: 'cinema.html'
 
   $urlRouterProvider.otherwise '/fr'
 
   ParseProvider.initialize(
-    "N2xyMRbsrFcBuzq7TXLwieDGM9FzwODEY44LLFOP", # Application ID
-    "zTAHO7HKWvbV1awq5wQlexRc368lOQtSbmycOi0O"  # REST API Key
+    "2Y3JhneedL6TfTswvBgPfJbZ0qxQRJHj8jg0GqEU", # Application ID
+    "w1ek8EuSk7dD8bEBDSN5J8XTyXlGuOgx8mv7q7MD"  # REST API Key
   )
 
 app.run ($rootScope, $state) ->
