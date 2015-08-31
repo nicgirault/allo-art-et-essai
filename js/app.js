@@ -17,6 +17,15 @@ app.config(function($locationProvider, $stateProvider, $urlRouterProvider, Parse
     url: '/cinema',
     controller: 'cinemaCtrl',
     templateUrl: 'cinema.html'
+  }).state('showtime', {
+    url: '/cinema/:cinemaId/showtime',
+    controller: 'showtimeCtrl',
+    templateUrl: 'showtime.html',
+    resolve: {
+      movies: function(AlloCine, $stateParams) {
+        return AlloCine.getMovies($stateParams.cinemaId);
+      }
+    }
   });
   $urlRouterProvider.otherwise('/cinema');
   return ParseProvider.initialize("2Y3JhneedL6TfTswvBgPfJbZ0qxQRJHj8jg0GqEU", "w1ek8EuSk7dD8bEBDSN5J8XTyXlGuOgx8mv7q7MD");
@@ -47,6 +56,16 @@ app.factory('AlloCine', function($resource, ALLOCINE_API_URL, ALLOCINE_PARTNER_T
           cinema.geoloc = place.geoloc;
           return cinema.area = place.area;
         }
+      });
+    },
+    getMovies: function(cinemaId) {
+      var cinemaData;
+      cinemaData = Cinema.get({
+        partner: ALLOCINE_PARTNER_TOKEN,
+        alloCineId: cinemaId
+      });
+      return cinemaData.$promise.then(function(data) {
+        return data.feed.theaterShowtimes[0].movieShowtimes;
       });
     }
   };
@@ -103,6 +122,14 @@ app.controller('cinemaCtrl', function($scope, Cinema, AlloCine) {
     });
   };
   return $scope.fetchCinemas();
+});
+
+app.controller('showtimeCtrl', function($scope, movies) {
+  $scope.movies = movies;
+  return $scope.versionLabel = {
+    "true": "original",
+    "false": "doublage"
+  };
 });
 
 var __hasProp = {}.hasOwnProperty,
