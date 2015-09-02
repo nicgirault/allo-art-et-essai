@@ -1,15 +1,19 @@
 'use strict';
 var app;
 
-app = angular.module('alloArtEtEssai', ['ng', 'ngResource', 'ui.router', 'ui.bootstrap', 'app.templates', 'Parse', 'angulartics', 'angulartics.google.analytics']);
+app = angular.module('alloArtEtEssai', ['ng', 'ngResource', 'ui.router', 'ui.bootstrap', 'app.templates', 'Parse', 'angulartics', 'angulartics.google.analytics', 'uiGmapgoogle-maps']);
 
 app.constant('ALLOCINE_API_URL', 'http://api.allocine.fr/rest/v3');
 
 app.constant('ALLOCINE_PARTNER_TOKEN', 'yW5kcm9pZC12M3M');
 
-app.config(function($locationProvider, $stateProvider, $urlRouterProvider, ParseProvider) {
+app.config(function($locationProvider, $stateProvider, $urlRouterProvider, ParseProvider, uiGmapGoogleMapApiProvider) {
   $locationProvider.hashPrefix('!');
-  $stateProvider.state('admin-cinema', {
+  $stateProvider.state('map', {
+    url: '/map',
+    controller: 'mapCtrl',
+    templateUrl: 'map.html'
+  }).state('admin-cinema', {
     url: '/admin/cinema',
     controller: 'adminCinemaCtrl',
     templateUrl: 'admin-cinema.html'
@@ -27,8 +31,12 @@ app.config(function($locationProvider, $stateProvider, $urlRouterProvider, Parse
       }
     }
   });
-  $urlRouterProvider.otherwise('/cinema');
-  return ParseProvider.initialize("2Y3JhneedL6TfTswvBgPfJbZ0qxQRJHj8jg0GqEU", "w1ek8EuSk7dD8bEBDSN5J8XTyXlGuOgx8mv7q7MD");
+  $urlRouterProvider.otherwise('/map');
+  ParseProvider.initialize("2Y3JhneedL6TfTswvBgPfJbZ0qxQRJHj8jg0GqEU", "w1ek8EuSk7dD8bEBDSN5J8XTyXlGuOgx8mv7q7MD");
+  return uiGmapGoogleMapApiProvider.configure({
+    v: '3.20',
+    libraries: ''
+  });
 });
 
 app.run(function($rootScope, $state) {
@@ -66,6 +74,23 @@ app.factory('AlloCine', function($resource, ALLOCINE_API_URL, ALLOCINE_PARTNER_T
       });
       return cinemaData.$promise.then(function(data) {
         return data.feed.theaterShowtimes[0].movieShowtimes;
+      });
+    },
+    getCinemaAround: function(geoloc, callback) {
+      var CinemaList, cinemaListPromise, yolo;
+      if (!((geoloc.latitude != null) && (geoloc.longitude != null))) {
+        return;
+      }
+      CinemaList = $resource(ALLOCINE_API_URL + '/theaterlist?partner=:partner&format=json&count=:count&lat=:lat&long=:long&radius=:radius');
+      cinemaListPromise = CinemaList.get({
+        partner: ALLOCINE_PARTNER_TOKEN,
+        lat: geoloc.latitude,
+        long: geoloc.longitude,
+        radius: 20,
+        count: 20
+      });
+      return yolo = cinemaListPromise.$promise.then(function(data) {
+        return callback(data.feed.theater);
       });
     }
   };
@@ -122,6 +147,49 @@ app.controller('cinemaCtrl', function($scope, Cinema, AlloCine) {
     });
   };
   return $scope.fetchCinemas();
+});
+
+var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+app.controller('mapCtrl', function($scope, uiGmapGoogleMapApi, AlloCine, Cinema) {
+  var center;
+  center = {
+    latitude: 48.858181,
+    longitude: 2.335000
+  };
+  return uiGmapGoogleMapApi.then(function(maps) {
+    AlloCine.getCinemaAround(center, function(cinemaList) {
+      return Cinema.query().then(function(artEtEssaiCinemas) {
+        var artEtEssaiCinemaCodes, c;
+        artEtEssaiCinemaCodes = (function() {
+          var _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = artEtEssaiCinemas.length; _i < _len; _i++) {
+            c = artEtEssaiCinemas[_i];
+            _results.push(c.alloCineId);
+          }
+          return _results;
+        })();
+        _.map(cinemaList, function(cinema) {
+          return cinema.geoloc = {
+            latitude: cinema.geoloc.lat,
+            longitude: cinema.geoloc.long
+          };
+        });
+        return $scope.cinemaList = _.filter(cinemaList, function(cinema) {
+          var _ref, _ref1;
+          if (_ref = cinema.code, __indexOf.call(artEtEssaiCinemaCodes, _ref) >= 0) {
+            console.log(cinema);
+          }
+          return _ref1 = cinema.code, __indexOf.call(artEtEssaiCinemaCodes, _ref1) >= 0;
+        });
+      });
+    });
+    return $scope.map = {
+      center: center,
+      zoom: 13
+    };
+  });
 });
 
 app.controller('showtimeCtrl', function($scope, movies) {
