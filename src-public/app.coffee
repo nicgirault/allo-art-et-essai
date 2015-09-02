@@ -9,6 +9,7 @@ app = angular.module 'alloArtEtEssai', [
   'Parse'
   'angulartics'
   'angulartics.google.analytics'
+  'uiGmapgoogle-maps'
 ]
 
 app.constant 'ALLOCINE_API_URL', 'http://api.allocine.fr/rest/v3'
@@ -19,11 +20,16 @@ app.config (
   $stateProvider
   $urlRouterProvider
   ParseProvider
+  uiGmapGoogleMapApiProvider
 ) ->
 
   $locationProvider.hashPrefix '!'
 
   $stateProvider
+  .state 'map',
+    url: '/map'
+    controller: 'mapCtrl'
+    templateUrl: 'map.html'
   .state 'admin-cinema',
     url: '/admin/cinema'
     controller: 'adminCinemaCtrl'
@@ -40,12 +46,18 @@ app.config (
       movies: (AlloCine, $stateParams) ->
         return AlloCine.getMovies $stateParams.cinemaId
 
-  $urlRouterProvider.otherwise '/cinema'
+  $urlRouterProvider.otherwise '/map'
 
   ParseProvider.initialize(
     "2Y3JhneedL6TfTswvBgPfJbZ0qxQRJHj8jg0GqEU", # Application ID
     "w1ek8EuSk7dD8bEBDSN5J8XTyXlGuOgx8mv7q7MD"  # REST API Key
   )
+
+  uiGmapGoogleMapApiProvider.configure {
+    #key: 'AIzaSyDXUwacxRBdrqDyJ0x7kqqD9DuvVxJjngI'
+    v: '3.20'
+    libraries: ''
+  }
 
 app.run ($rootScope, $state) ->
   $rootScope.$state = $state

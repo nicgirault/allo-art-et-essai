@@ -24,3 +24,17 @@ app.factory 'AlloCine', ($resource, ALLOCINE_API_URL, ALLOCINE_PARTNER_TOKEN) ->
     }
     cinemaData.$promise.then (data) ->
       return data.feed.theaterShowtimes[0].movieShowtimes
+
+  getCinemaAround: (geoloc, callback) ->
+    return unless geoloc.latitude? and geoloc.longitude?
+    CinemaList = $resource ALLOCINE_API_URL + '/theaterlist?partner=:partner&format=json&count=:count&lat=:lat&long=:long&radius=:radius'
+    cinemaListPromise = CinemaList.get {
+      partner: ALLOCINE_PARTNER_TOKEN,
+      lat: geoloc.latitude
+      long: geoloc.longitude
+      radius: 20
+      count: 20
+    }
+
+    yolo = cinemaListPromise.$promise.then (data) ->
+      callback data.feed.theater

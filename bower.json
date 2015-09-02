@@ -10,7 +10,10 @@
     "angulartics": "~0.17.1",
     "bootstrap": "3.2.x",
     "moment": "2.6.x",
-    "lodash": "~2.4.1"
-
+    "lodash": "~2.4.1",
+    "angular-google-maps": "~2.1.6"
+  },
+  "resolutions": {
+    "lodash": ">=3.8.0"
   }
 }

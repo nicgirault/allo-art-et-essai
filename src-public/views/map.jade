@@ -1,0 +1,6 @@
+ui-gmap-google-map(center='map.center' zoom='map.zoom')
+  ui-gmap-marker(
+    ng-repeat='cinema in cinemaList'
+    idKey='cinema.code'
+    coords='cinema.geoloc'
+  )

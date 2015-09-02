@@ -14,7 +14,8 @@ gulp.task 'vendor', (done) ->
     'bower_components/angulartics/src/angulartics.js'
     'bower_components/angulartics/src/angulartics-ga.js'
     'bower_components/moment/moment.js'
-    'bower_components/lodash/dist/lodash.js'
+    'bower_components/lodash/lodash.min.js'
+    'bower_components/angular-google-maps/dist/angular-google-maps.min.js'
   ]
   .pipe(concat('vendor.js'))
   .on 'error', gutil.log
