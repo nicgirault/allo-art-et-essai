@@ -33,7 +33,7 @@ app.factory 'AlloCine', ($resource, ALLOCINE_API_URL, ALLOCINE_PARTNER_TOKEN) ->
       lat: geoloc.latitude
       long: geoloc.longitude
       radius: 20
-      count: 20
+      count: 200
     }
 
     yolo = cinemaListPromise.$promise.then (data) ->

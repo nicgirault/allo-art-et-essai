@@ -1,5 +1,5 @@
 app.factory 'Position', ->
-  getMapCenter: (callback) ->
+  getDefaultCenter: (callback) ->
     if navigator.geolocation?
       navigator.geolocation.getCurrentPosition (position) ->
         callback
