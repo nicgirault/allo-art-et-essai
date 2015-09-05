@@ -6,10 +6,15 @@ html(lang="en", ng-app="alloArtEtEssai")
     meta(http-equiv="X-UA-Compatible", content="IE=edge")
     meta(name="viewport", content="width=device-width, initial-scale=1")
     link(rel="stylesheet", href="css/app.css")
+    link(rel="stylesheet", href="css/vendor.css")
 
-  body
-    main.container(ui-view)
-
+  body(ng-controller='layoutCtrl')
+    main(ui-view)
+    
+    footer.footer
+      .container
+        p.text-muted
+          a(ui-sref="about") Explications
     script(src="js/vendor.js")
     script(src="js/templates.js")
     script(src="js/app.js")

@@ -38,6 +38,9 @@ app.config (
     url: '/cinema'
     controller: 'cinemaCtrl'
     templateUrl: 'cinema.html'
+  .state 'about',
+    url: '/about'
+    templateUrl: 'about.html'
   .state 'showtime',
     url: '/cinema/:cinemaId/showtime'
     controller: 'showtimeCtrl'
