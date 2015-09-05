@@ -1,6 +1,5 @@
 app.controller 'mapCtrl', ($scope, uiGmapGoogleMapApi, AlloCine, Cinema, Position) ->
   handleDragend = (maps, eventName, args) ->
-    console.log maps
     newCenter =
       latitude: maps.center.A
       longitude: maps.center.F
@@ -23,7 +22,6 @@ app.controller 'mapCtrl', ($scope, uiGmapGoogleMapApi, AlloCine, Cinema, Positio
     $scope.map =
       center: center
       zoom: 13
-
 
   $scope.events =
     'dragend': handleDragend
