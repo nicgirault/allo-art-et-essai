@@ -1,7 +1,7 @@
 'use strict';
 var app;
 
-app = angular.module('alloArtEtEssai', ['ng', 'ngResource', 'ui.router', 'ui.bootstrap', 'app.templates', 'Parse', 'angulartics', 'angulartics.google.analytics', 'uiGmapgoogle-maps']);
+app = angular.module('alloArtEtEssai', ['ng', 'ngResource', 'ui.router', 'ui.bootstrap', 'app.templates', 'Parse', 'angulartics', 'angulartics.google.analytics', 'uiGmapgoogle-maps', 'ngAside']);
 
 app.constant('ALLOCINE_API_URL', 'http://api.allocine.fr/rest/v3');
 
@@ -21,6 +21,9 @@ app.config(function($locationProvider, $stateProvider, $urlRouterProvider, Parse
     url: '/cinema',
     controller: 'cinemaCtrl',
     templateUrl: 'cinema.html'
+  }).state('about', {
+    url: '/about',
+    templateUrl: 'about.html'
   }).state('showtime', {
     url: '/cinema/:cinemaId/showtime',
     controller: 'showtimeCtrl',
@@ -138,6 +141,26 @@ app.controller('adminCinemaCtrl', function($scope, Cinema, AlloCine) {
   return $scope.newCinema = new Cinema;
 });
 
+app.controller('asideCtrl', function($scope, $modalInstance) {
+  $scope.items = [
+    {
+      label: 'Cinémas',
+      state: 'cinema'
+    }, {
+      label: 'Explications',
+      state: 'explications'
+    }
+  ];
+  $scope.ok = function(e) {
+    $modalInstance.close();
+    return e.stopPropagation();
+  };
+  return $scope.cancel = function(e) {
+    $modalInstance.dismiss();
+    return e.stopPropagation();
+  };
+});
+
 app.controller('cinemaCtrl', function($scope, Cinema, AlloCine) {
   $scope.fetchCinemas = function() {
     return Cinema.query().then(function(cinemas) {
@@ -150,6 +173,29 @@ app.controller('cinemaCtrl', function($scope, Cinema, AlloCine) {
     });
   };
   return $scope.fetchCinemas();
+});
+
+app.controller('layoutCtrl', function($scope, $aside) {
+  $scope.asideState = {
+    open: false
+  };
+  return $scope.openAside = function(position, backdrop) {
+    var postClose;
+    postClose = function() {
+      $scope.asideState.open = false;
+    };
+    $scope.asideState = {
+      open: true,
+      position: position
+    };
+    $aside.open({
+      templateUrl: 'aside.html',
+      placement: position,
+      size: 'sm',
+      backdrop: backdrop,
+      controller: 'asideCtrl'
+    });
+  };
 });
 
 var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
