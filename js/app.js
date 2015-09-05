@@ -151,44 +151,39 @@ app.controller('cinemaCtrl', function($scope, Cinema, AlloCine) {
 
 var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-app.controller('mapCtrl', function($scope, uiGmapGoogleMapApi, AlloCine, Cinema) {
-  var center;
-  center = {
-    latitude: 48.858181,
-    longitude: 2.335000
-  };
-  return uiGmapGoogleMapApi.then(function(maps) {
-    AlloCine.getCinemaAround(center, function(cinemaList) {
-      return Cinema.query().then(function(artEtEssaiCinemas) {
-        var artEtEssaiCinemaCodes, c;
-        artEtEssaiCinemaCodes = (function() {
-          var _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = artEtEssaiCinemas.length; _i < _len; _i++) {
-            c = artEtEssaiCinemas[_i];
-            _results.push(c.alloCineId);
-          }
-          return _results;
-        })();
-        _.map(cinemaList, function(cinema) {
-          return cinema.geoloc = {
-            latitude: cinema.geoloc.lat,
-            longitude: cinema.geoloc.long
-          };
-        });
-        return $scope.cinemaList = _.filter(cinemaList, function(cinema) {
-          var _ref, _ref1;
-          if (_ref = cinema.code, __indexOf.call(artEtEssaiCinemaCodes, _ref) >= 0) {
-            console.log(cinema);
-          }
-          return _ref1 = cinema.code, __indexOf.call(artEtEssaiCinemaCodes, _ref1) >= 0;
+app.controller('mapCtrl', function($scope, uiGmapGoogleMapApi, AlloCine, Cinema, Position) {
+  return Position.getMapCenter(function(center) {
+    console.log(center);
+    return uiGmapGoogleMapApi.then(function(maps) {
+      AlloCine.getCinemaAround(center, function(cinemaList) {
+        return Cinema.query().then(function(artEtEssaiCinemas) {
+          var artEtEssaiCinemaCodes, c;
+          artEtEssaiCinemaCodes = (function() {
+            var _i, _len, _results;
+            _results = [];
+            for (_i = 0, _len = artEtEssaiCinemas.length; _i < _len; _i++) {
+              c = artEtEssaiCinemas[_i];
+              _results.push(c.alloCineId);
+            }
+            return _results;
+          })();
+          _.map(cinemaList, function(cinema) {
+            return cinema.geoloc = {
+              latitude: cinema.geoloc.lat,
+              longitude: cinema.geoloc.long
+            };
+          });
+          return $scope.cinemaList = _.filter(cinemaList, function(cinema) {
+            var _ref;
+            return _ref = cinema.code, __indexOf.call(artEtEssaiCinemaCodes, _ref) >= 0;
+          });
         });
       });
+      return $scope.map = {
+        center: center,
+        zoom: 13
+      };
     });
-    return $scope.map = {
-      center: center,
-      zoom: 13
-    };
   });
 });
 
@@ -217,4 +212,24 @@ app.factory('Cinema', function(Parse) {
     return Cinema;
 
   })(Parse.Model);
+});
+
+app.factory('Position', function() {
+  return {
+    getMapCenter: function(callback) {
+      if (navigator.geolocation != null) {
+        return navigator.geolocation.getCurrentPosition(function(position) {
+          return callback({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+        });
+      } else {
+        return callback({
+          latitude: 48.858181,
+          longitude: 2.335000
+        });
+      }
+    }
+  };
 });
