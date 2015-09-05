@@ -27,6 +27,7 @@ app.config(function($locationProvider, $stateProvider, $urlRouterProvider, Parse
     templateUrl: 'showtime.html',
     resolve: {
       movies: function(AlloCine, $stateParams) {
+        console.log($stateParams);
         return AlloCine.getMovies($stateParams.cinemaId);
       }
     }
@@ -155,7 +156,6 @@ app.controller('mapCtrl', function($scope, uiGmapGoogleMapApi, AlloCine, Cinema,
   var handleDragend, setCinemaList;
   handleDragend = function(maps, eventName, args) {
     var newCenter;
-    console.log(maps);
     newCenter = {
       latitude: maps.center.A,
       longitude: maps.center.F
@@ -230,6 +230,11 @@ app.factory('Cinema', function(Parse) {
 app.factory('Position', function() {
   return {
     getDefaultCenter: function(callback) {
+      callback({
+        latitude: 48.858181,
+        longitude: 2.335000
+      });
+      return;
       if (navigator.geolocation != null) {
         return navigator.geolocation.getCurrentPosition(function(position) {
           return callback({
