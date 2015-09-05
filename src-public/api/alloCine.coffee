@@ -17,13 +17,16 @@ app.factory 'AlloCine', ($resource, ALLOCINE_API_URL, ALLOCINE_PARTNER_TOKEN) ->
         cinema.geoloc = place.geoloc
         cinema.area = place.area
 
-  getMovies: (cinemaId) ->
+  getCinemaData: (cinemaId) ->
     cinemaData = Cinema.get {
       partner: ALLOCINE_PARTNER_TOKEN,
       alloCineId: cinemaId
     }
     cinemaData.$promise.then (data) ->
-      return data.feed.theaterShowtimes[0].movieShowtimes
+      return {
+        movies: data.feed.theaterShowtimes[0].movieShowtimes
+        cinema: data.feed.theaterShowtimes[0].place.theater
+      }
 
   getCinemaAround: (geoloc, callback) ->
     return unless geoloc.latitude? and geoloc.longitude?

@@ -43,8 +43,8 @@ app.config (
     controller: 'showtimeCtrl'
     templateUrl: 'showtime.html'
     resolve:
-      movies: (AlloCine, $stateParams) ->
-        return AlloCine.getMovies $stateParams.cinemaId
+      cinemaData: (AlloCine, $stateParams) ->
+        return AlloCine.getCinemaData $stateParams.cinemaId
 
   $urlRouterProvider.otherwise '/map'
 
