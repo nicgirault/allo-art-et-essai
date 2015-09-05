@@ -26,9 +26,8 @@ app.config(function($locationProvider, $stateProvider, $urlRouterProvider, Parse
     controller: 'showtimeCtrl',
     templateUrl: 'showtime.html',
     resolve: {
-      movies: function(AlloCine, $stateParams) {
-        console.log($stateParams);
-        return AlloCine.getMovies($stateParams.cinemaId);
+      cinemaData: function(AlloCine, $stateParams) {
+        return AlloCine.getCinemaData($stateParams.cinemaId);
       }
     }
   });
@@ -67,14 +66,17 @@ app.factory('AlloCine', function($resource, ALLOCINE_API_URL, ALLOCINE_PARTNER_T
         }
       });
     },
-    getMovies: function(cinemaId) {
+    getCinemaData: function(cinemaId) {
       var cinemaData;
       cinemaData = Cinema.get({
         partner: ALLOCINE_PARTNER_TOKEN,
         alloCineId: cinemaId
       });
       return cinemaData.$promise.then(function(data) {
-        return data.feed.theaterShowtimes[0].movieShowtimes;
+        return {
+          movies: data.feed.theaterShowtimes[0].movieShowtimes,
+          cinema: data.feed.theaterShowtimes[0].place.theater
+        };
       });
     },
     getCinemaAround: function(geoloc, callback) {
@@ -200,8 +202,9 @@ app.controller('mapCtrl', function($scope, uiGmapGoogleMapApi, AlloCine, Cinema,
   };
 });
 
-app.controller('showtimeCtrl', function($scope, movies) {
-  $scope.movies = movies;
+app.controller('showtimeCtrl', function($scope, cinemaData) {
+  $scope.movies = cinemaData.movies;
+  $scope.cinema = cinemaData.cinema;
   return $scope.versionLabel = {
     "true": "original",
     "false": "doublage"

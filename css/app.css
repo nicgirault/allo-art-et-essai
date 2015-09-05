@@ -6163,10 +6163,6 @@ button.close {
     display: none !important;
   }
 }
-.navbar-brand,
-h1 {
-  color: white;
-}
 .angular-google-map-container {
   height: 800px;
 }
