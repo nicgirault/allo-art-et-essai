@@ -87,7 +87,7 @@ app.factory('AlloCine', function($resource, ALLOCINE_API_URL, ALLOCINE_PARTNER_T
         lat: geoloc.latitude,
         long: geoloc.longitude,
         radius: 20,
-        count: 20
+        count: 200
       });
       return yolo = cinemaListPromise.$promise.then(function(data) {
         return callback(data.feed.theater);
@@ -152,39 +152,52 @@ app.controller('cinemaCtrl', function($scope, Cinema, AlloCine) {
 var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 app.controller('mapCtrl', function($scope, uiGmapGoogleMapApi, AlloCine, Cinema, Position) {
-  return Position.getMapCenter(function(center) {
-    console.log(center);
-    return uiGmapGoogleMapApi.then(function(maps) {
-      AlloCine.getCinemaAround(center, function(cinemaList) {
-        return Cinema.query().then(function(artEtEssaiCinemas) {
-          var artEtEssaiCinemaCodes, c;
-          artEtEssaiCinemaCodes = (function() {
-            var _i, _len, _results;
-            _results = [];
-            for (_i = 0, _len = artEtEssaiCinemas.length; _i < _len; _i++) {
-              c = artEtEssaiCinemas[_i];
-              _results.push(c.alloCineId);
-            }
-            return _results;
-          })();
-          _.map(cinemaList, function(cinema) {
-            return cinema.geoloc = {
-              latitude: cinema.geoloc.lat,
-              longitude: cinema.geoloc.long
-            };
-          });
-          return $scope.cinemaList = _.filter(cinemaList, function(cinema) {
-            var _ref;
-            return _ref = cinema.code, __indexOf.call(artEtEssaiCinemaCodes, _ref) >= 0;
-          });
+  var handleDragend, setCinemaList;
+  handleDragend = function(maps, eventName, args) {
+    var newCenter;
+    console.log(maps);
+    newCenter = {
+      latitude: maps.center.A,
+      longitude: maps.center.F
+    };
+    return setCinemaList(newCenter);
+  };
+  setCinemaList = function(center) {
+    return AlloCine.getCinemaAround(center, function(cinemaList) {
+      return Cinema.query().then(function(artEtEssaiCinemas) {
+        var artEtEssaiCinemaCodes, c;
+        artEtEssaiCinemaCodes = (function() {
+          var _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = artEtEssaiCinemas.length; _i < _len; _i++) {
+            c = artEtEssaiCinemas[_i];
+            _results.push(c.alloCineId);
+          }
+          return _results;
+        })();
+        _.map(cinemaList, function(cinema) {
+          return cinema.geoloc = {
+            latitude: cinema.geoloc.lat,
+            longitude: cinema.geoloc.long
+          };
+        });
+        return $scope.cinemaList = _.filter(cinemaList, function(cinema) {
+          var _ref;
+          return _ref = cinema.code, __indexOf.call(artEtEssaiCinemaCodes, _ref) >= 0;
         });
       });
-      return $scope.map = {
-        center: center,
-        zoom: 13
-      };
     });
+  };
+  Position.getDefaultCenter(function(center) {
+    setCinemaList(center);
+    return $scope.map = {
+      center: center,
+      zoom: 13
+    };
   });
+  return $scope.events = {
+    'dragend': handleDragend
+  };
 });
 
 app.controller('showtimeCtrl', function($scope, movies) {
@@ -216,7 +229,7 @@ app.factory('Cinema', function(Parse) {
 
 app.factory('Position', function() {
   return {
-    getMapCenter: function(callback) {
+    getDefaultCenter: function(callback) {
       if (navigator.geolocation != null) {
         return navigator.geolocation.getCurrentPosition(function(position) {
           return callback({
